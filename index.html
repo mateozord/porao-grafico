@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="PORÃO GRÁFICO: pôsteres underground, capas e flyers para bandas, eventos e projetos autorais."
+    />
+    <title>PORÃO GRÁFICO</title>
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="PORÃO GRÁFICO" />
+    <meta
+      property="og:description"
+      content="Pôsteres underground, capas e flyers com estética grunge, dark fantasy, horror e metal."
+    />
+    <meta property="og:image" content="/og-image.jpg" />
+    <meta property="og:locale" content="pt_BR" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PORÃO GRÁFICO" />
+    <meta
+      name="twitter:description"
+      content="Pôsteres underground, capas e flyers com estética grunge, dark fantasy, horror e metal."
+    />
+    <meta name="twitter:image" content="/og-image.jpg" />
+  </head>
+  <body>
+    <form
+      name="orcamento"
+      method="POST"
+      data-netlify="true"
+      netlify-honeypot="bot-field"
+      hidden
+    >
+      <input type="hidden" name="form-name" value="orcamento" />
+      <input type="text" name="bot-field" />
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="tel" name="whatsapp" />
+      <select name="projectType">
+        <option value="Poster de show">Poster de show</option>
+        <option value="Capa de single/album">Capa de single/album</option>
+        <option value="Pacote de divulgacao">Pacote de divulgacao</option>
+        <option value="Identidade visual dark">Identidade visual dark</option>
+      </select>
+      <select name="deadline">
+        <option value="Sem prazo definido">Sem prazo definido</option>
+        <option value="Ate 7 dias">Ate 7 dias</option>
+        <option value="8 a 15 dias">8 a 15 dias</option>
+        <option value="Mais de 15 dias">Mais de 15 dias</option>
+      </select>
+      <select name="budget">
+        <option value="Ainda nao sei">Ainda nao sei</option>
+        <option value="Ate R$150">Ate R$150</option>
+        <option value="R$150 a R$300">R$150 a R$300</option>
+        <option value="Acima de R$300">Acima de R$300</option>
+      </select>
+      <textarea name="message"></textarea>
+    </form>
+    <form
+      name="pedido-carrinho"
+      method="POST"
+      data-netlify="true"
+      netlify-honeypot="bot-field"
+      hidden
+    >
+      <input type="hidden" name="form-name" value="pedido-carrinho" />
+      <input type="text" name="bot-field" />
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="tel" name="whatsapp" />
+      <select name="payment">
+        <option value="Pix">Pix</option>
+        <option value="Cartao">Cartao (link de pagamento)</option>
+        <option value="Combinar na entrega">Combinar na entrega</option>
+      </select>
+      <textarea name="delivery"></textarea>
+      <textarea name="items"></textarea>
+      <input type="text" name="total" />
+    </form>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

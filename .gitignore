@@ -1,0 +1,17 @@
+node_modules/
+dist/
+*.zip
+*.bat
+ARRASTE-ESTA-PASTA-NO-NETLIFY-SEM-ZIP/
+DEPLOY-NETLIFY-FORMULARIO-CORRIGIDO/
+TESTE-NETLIFY-404/
+porao-grafico-deploy-corrigido/
+originals-portfolio/
+outputs/
+work/
+.agents/
+.claude/
+.codex/
+DIAGNOSTICO-NETLIFY-404.md
+ENVIAR-ESTE-DEPLOY.md
+PUBLICAR-SITE.md
