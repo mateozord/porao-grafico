@@ -16,6 +16,24 @@ html {
   scroll-behavior: smooth;
 }
 
+#inicio,
+#portfolio,
+#servicos,
+#processo,
+#contato {
+  scroll-margin-top: 92px;
+}
+
+@media (max-width: 767px) {
+  #inicio,
+  #portfolio,
+  #servicos,
+  #processo,
+  #contato {
+    scroll-margin-top: 128px;
+  }
+}
+
 body {
   margin: 0;
   min-width: 320px;
@@ -46,6 +64,13 @@ img {
   border-color: rgba(239, 231, 220, 0.45);
   background: rgba(239, 231, 220, 0.08);
   color: #efe7dc;
+}
+
+@media (max-width: 767px) {
+  .nav-links-scroll {
+    mask-image: linear-gradient(to right, black 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 88%, transparent 100%);
+  }
 }
 
 ::selection {

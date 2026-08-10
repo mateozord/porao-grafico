@@ -49,7 +49,7 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
         <div className="flex-1 overflow-y-auto px-5 py-4">
           {items.length === 0 ? (
             <p className="mt-10 text-center text-sm leading-6 text-paper">
-              Seu carrinho está vazio. Adicione um poster do portfólio.
+              Carrinho vazio por enquanto. Escolhe um pôster lá no portfólio.
             </p>
           ) : (
             <ul className="flex flex-col gap-4">

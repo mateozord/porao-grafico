@@ -76,19 +76,19 @@ export const portfolioItems = [
 export const services = [
   {
     title: 'Pôster de show',
-    text: 'Arte vertical pra divulgar show, festival ou festa underground — o tipo de pôster que já parece ter décadas colado na parede.',
+    text: 'Pôster vertical pra divulgar show ou festa. Faço com aquela pegada de já estar colado na parede há uns 20 anos.',
   },
   {
     title: 'Capa de single/álbum',
-    text: 'Capa pronta pro Spotify e pras redes, com identidade que aguenta o zoom no thumbnail.',
+    text: 'Capa pronta pro Spotify e pras redes. Penso desde o rascunho em como ela fica no thumbnail minúsculo.',
   },
   {
     title: 'Pacote de divulgação',
-    text: 'Pôster, story, post quadrado e banner com a mesma linguagem visual, sem parecer que foi feito por pessoas diferentes.',
+    text: 'Pôster, story, post quadrado e banner com a mesma cara, sem parecer que cada peça saiu da mão de uma pessoa diferente.',
   },
   {
     title: 'Identidade visual dark',
-    text: 'Direção estética completa pra banda, coletivo ou projeto que precisa de uma cara só — da logo ao flyer.',
+    text: 'Ajudo sua banda ou coletivo a ter uma cara só, da logo ao flyer, sem remendar visual novo a cada lançamento.',
   },
 ]
 

@@ -22,7 +22,7 @@ export default function PosterMockup({
           <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-bone/15" />
           {featured && (
             <div className="absolute left-4 top-4 border border-bone/25 bg-black/70 px-3 py-2 text-[10px] font-black uppercase tracking-[0.26em] text-bone">
-              Poster em destaque
+              Pôster em destaque
             </div>
           )}
         </div>
@@ -59,13 +59,13 @@ export default function PosterMockup({
 
         <div className="relative z-10 p-5">
           <p className="mb-2 text-xs uppercase tracking-[0.28em] text-paper/70">
-            {featured ? 'Poster em destaque' : item.category}
+            {featured ? 'Pôster em destaque' : item.category}
           </p>
           <p className="font-display text-5xl uppercase leading-none text-bone sm:text-6xl">
             {item.symbol}
           </p>
           <div className="mt-4 border-t border-bone/30 pt-3 text-xs uppercase tracking-[0.22em] text-bone/75">
-            porao grafico
+            porão gráfico
           </div>
         </div>
       </div>

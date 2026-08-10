@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   ArrowDownRight,
   CheckCircle2,
@@ -43,16 +43,33 @@ function ButtonLink({ href, children, variant = 'primary', className = '' }) {
 function Nav({ onOpenCart }) {
   const { itemCount } = useCart()
 
+  const cartBadge = itemCount > 0 && (
+    <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-ember px-1 text-[10px] font-black text-bone">
+      {itemCount}
+    </span>
+  )
+
   return (
     <header className="fixed left-0 right-0 top-0 z-50 border-b border-bone/10 bg-coal/90 backdrop-blur">
       <nav className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
-        <a
-          href="#inicio"
-          className="font-display text-2xl uppercase leading-none text-bone"
-        >
-          PORÃO GRÁFICO
-        </a>
-        <div className="flex items-center gap-2 overflow-x-auto text-[10px] font-bold uppercase tracking-[0.18em] text-paper sm:gap-4 sm:text-xs md:overflow-visible">
+        <div className="flex items-center justify-between gap-3">
+          <a
+            href="#inicio"
+            className="font-display text-2xl uppercase leading-none text-bone"
+          >
+            PORÃO GRÁFICO
+          </a>
+          <button
+            type="button"
+            onClick={onOpenCart}
+            aria-label="Abrir carrinho"
+            className="nav-chip relative flex items-center p-2.5 md:hidden"
+          >
+            <ShoppingCart className="h-4 w-4" />
+            {cartBadge}
+          </button>
+        </div>
+        <div className="nav-links-scroll flex items-center gap-2 overflow-x-auto text-[10px] font-bold uppercase tracking-[0.18em] text-paper sm:gap-4 sm:text-xs md:overflow-visible">
           <a className="nav-chip" href="#portfolio">
             Portfólio
           </a>
@@ -69,15 +86,11 @@ function Nav({ onOpenCart }) {
             type="button"
             onClick={onOpenCart}
             aria-label="Abrir carrinho"
-            className="nav-chip relative flex items-center gap-2"
+            className="nav-chip relative hidden items-center gap-2 md:flex"
           >
             <ShoppingCart className="h-3.5 w-3.5" />
             Carrinho
-            {itemCount > 0 && (
-              <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-ember px-1 text-[10px] font-black text-bone">
-                {itemCount}
-              </span>
-            )}
+            {cartBadge}
           </button>
         </div>
       </nav>
@@ -103,9 +116,9 @@ function Hero() {
             agência.
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-7 text-paper sm:text-lg sm:leading-8">
-            Pôster, flyer, capa e peça visual com estética grunge, dark
-            fantasy, horror, metal e post-punk — sempre com aquela textura de
-            xerox sujo.
+            Curto desenhar pôster, flyer e capa com aquela cara de xerox mal
+            tirado, meio sujo, meio sombrio. Se o seu som é pesado ou
+            estranho, a arte também vai ser.
           </p>
           <div className="mt-7 grid gap-3 sm:flex sm:flex-row">
             <ButtonLink href="#portfolio">Ver portfólio</ButtonLink>
@@ -134,11 +147,12 @@ function About() {
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[.75fr_1fr]">
         <SectionHeader title="Design com cheiro de amplificador queimado e parede mofada." />
         <p className="max-w-3xl text-base leading-7 text-paper sm:text-lg sm:leading-8">
-          Eu desenho pra quem não quer aquele visual limpinho de agência:
-          banda, evento independente, capa de single, flyer, projeto autoral.
-          Textura, sombra, ruído, criatura, fogo, castelo em ruína e
-          tipografia pesada — cada peça sai com cara de cartaz xerocado e
-          colado às pressas na parede do porão.
+          Não faço aquele visual limpinho de agência. Desenho pra banda,
+          evento independente, capa de single, projeto autoral — essas
+          coisas. Gosto de sujar a arte, rasgar papel, queimar borda, colocar
+          uma criatura estranha ou um castelo caindo aos pedaços. No fim, a
+          peça sai com cara de cartaz que alguém colou às pressas na parede
+          do porão.
         </p>
       </div>
     </section>
@@ -293,9 +307,8 @@ function FinalCall() {
           Sua banda não precisa parecer panfleto de dentista.
         </h2>
         <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-paper sm:text-lg sm:leading-8">
-          Se o seu projeto merece mais que um template genérico, bora
-          conversar — eu boto peso, ruído e clima de ritual em cada peça que
-          sai daqui.
+          Se o seu projeto merece mais que um template pronto, me chama. Eu
+          boto peso e sujeira em cada peça que sai daqui.
         </p>
         <div className="mt-8">
           <ButtonLink href="#contato">Chamar para orçamento</ButtonLink>
@@ -312,9 +325,25 @@ function Contact() {
     'Referências, prazo e clima visual',
   ]
 
-  const formSent =
-    typeof window !== 'undefined' &&
-    new URLSearchParams(window.location.search).get('pedido') === 'enviado'
+  const [status, setStatus] = useState('idle')
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    setStatus('sending')
+    const form = event.target
+    try {
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(new FormData(form)).toString(),
+      })
+      if (!response.ok) throw new Error('Falha no envio')
+      setStatus('success')
+      form.reset()
+    } catch {
+      setStatus('error')
+    }
+  }
 
   return (
     <section id="contato" className="px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
@@ -356,10 +385,10 @@ function Contact() {
         <form
           name="orcamento"
           method="POST"
-          action="/?pedido=enviado#contato"
           data-netlify="true"
           netlify-honeypot="bot-field"
           className="border border-bone/15 bg-black/35 p-5 sm:p-8"
+          onSubmit={handleSubmit}
         >
           <input type="hidden" name="form-name" value="orcamento" />
           <p className="hidden">
@@ -452,14 +481,27 @@ function Contact() {
 
           <button
             type="submit"
-            className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 border border-ember bg-ember px-5 py-3 text-sm font-black uppercase tracking-[0.18em] text-bone transition hover:bg-bone hover:text-coal sm:w-auto"
+            disabled={status === 'sending'}
+            className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 border border-ember bg-ember px-5 py-3 text-sm font-black uppercase tracking-[0.18em] text-bone transition hover:bg-bone hover:text-coal disabled:cursor-not-allowed disabled:border-bone/20 disabled:bg-transparent disabled:text-bone/30 sm:w-auto"
           >
-            Enviar pedido
+            {status === 'sending' ? 'Enviando...' : 'Enviar pedido'}
             <Send className="h-4 w-4" />
           </button>
-          {formSent && (
+          {status === 'success' && (
             <p className="mt-5 border border-ember/50 bg-ember/10 p-4 text-sm font-bold uppercase tracking-[0.14em] text-bone">
               Pedido enviado. Vou te responder em breve.
+            </p>
+          )}
+          {status === 'error' && (
+            <p className="mt-5 border border-ember/50 bg-ember/10 p-4 text-sm leading-6 text-bone">
+              Não consegui enviar por aqui agora. Manda direto pelo{' '}
+              <a
+                href={contactLinks.whatsapp}
+                className="font-bold text-ember underline"
+              >
+                WhatsApp
+              </a>{' '}
+              ou pelo e-mail que eu te respondo.
             </p>
           )}
         </form>
@@ -471,27 +513,11 @@ function Contact() {
 export default function App() {
   const [isCartOpen, setCartOpen] = useState(false)
   const [isCheckoutOpen, setCheckoutOpen] = useState(false)
-  const { clearCart } = useCart()
-
-  const orderJustSent =
-    typeof window !== 'undefined' &&
-    new URLSearchParams(window.location.search).get('carrinho') === 'enviado'
-
-  useEffect(() => {
-    if (orderJustSent) clearCart()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-coal text-bone">
       <div className="site-noise pointer-events-none fixed inset-0 z-[60] opacity-[0.08]" />
       <Nav onOpenCart={() => setCartOpen(true)} />
-      {orderJustSent && (
-        <div className="fixed left-0 right-0 top-0 z-[130] border-b border-ember/50 bg-ember px-4 py-3 text-center text-xs font-black uppercase tracking-[0.16em] text-bone">
-          Pedido recebido. Vou te chamar no WhatsApp pra combinar pagamento e
-          entrega.
-        </div>
-      )}
       <Hero />
       <About />
       <Portfolio />
@@ -500,7 +526,7 @@ export default function App() {
       <FinalCall />
       <Contact />
       <footer className="border-t border-bone/10 px-4 py-8 text-center text-[10px] uppercase tracking-[0.24em] text-paper sm:px-6 sm:text-xs lg:px-8">
-        PORÃO GRÁFICO / arte para bandas fictícias, eventos e projetos autorais
+        PORÃO GRÁFICO / pôster, capa e flyer com cara de porão
       </footer>
       <CartDrawer
         isOpen={isCartOpen}
