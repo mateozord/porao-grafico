@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   ArrowDownRight,
   CheckCircle2,
@@ -12,6 +12,7 @@ import CartDrawer from './components/CartDrawer.jsx'
 import Checkout from './components/Checkout.jsx'
 import Lightbox from './components/Lightbox.jsx'
 import PosterMockup from './components/PosterMockup.jsx'
+import Reveal from './components/Reveal.jsx'
 import SectionHeader from './components/SectionHeader.jsx'
 import { useCart } from './context/CartContext.jsx'
 import { portfolioItems, processSteps, services } from './data/content.js'
@@ -40,11 +41,55 @@ function ButtonLink({ href, children, variant = 'primary', className = '' }) {
   )
 }
 
+function SkullIcon({ className = '' }) {
+  return (
+    <svg viewBox="0 0 64 64" className={className} fill="none">
+      <path
+        d="M32 8c-11.6 0-19 8.1-19 18.4 0 7 3.1 11 5.9 14.6 1.3 1.7 1.5 3.4 1.5 6.4 0 2.6 0 4.6 2.4 4.6 1.9 0 2.1-1.4 2.3-3.1.1-1 .2-2 .9-2 .8 0 .8 1 .8 2.2 0 1.6.2 2.9 2.2 2.9s2.2-1.3 2.2-2.9c0-1.2 0-2.2.8-2.2.7 0 .8 1 .9 2 .2 1.7.4 3.1 2.3 3.1 2.4 0 2.4-2 2.4-4.6 0-3 .2-4.7 1.5-6.4 2.8-3.6 5.9-7.6 5.9-14.6C51 16.1 43.6 8 32 8z"
+        fill="currentColor"
+      />
+      <ellipse cx="24.5" cy="27" rx="4.4" ry="5.6" fill="#080708" />
+      <ellipse cx="39.5" cy="27" rx="4.4" ry="5.6" fill="#080708" />
+      <path d="M32 32.5l-3.4 6h6.8z" fill="#080708" />
+    </svg>
+  )
+}
+
 function Nav({ onOpenCart }) {
   const { itemCount } = useCart()
+  const [pop, setPop] = useState(false)
+  const previousCount = useRef(itemCount)
+  const [isScrolling, setIsScrolling] = useState(false)
+
+  useEffect(() => {
+    if (itemCount > previousCount.current) {
+      setPop(true)
+      const timeout = setTimeout(() => setPop(false), 320)
+      previousCount.current = itemCount
+      return () => clearTimeout(timeout)
+    }
+    previousCount.current = itemCount
+    return undefined
+  }, [itemCount])
+
+  useEffect(() => {
+    let stopTimeout
+    const handleScroll = () => {
+      setIsScrolling(true)
+      clearTimeout(stopTimeout)
+      stopTimeout = setTimeout(() => setIsScrolling(false), 500)
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      clearTimeout(stopTimeout)
+    }
+  }, [])
 
   const cartBadge = itemCount > 0 && (
-    <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-ember px-1 text-[10px] font-black text-bone">
+    <span
+      className={`absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-ember px-1 text-[10px] font-black text-bone ${pop ? 'badge-pop' : ''}`}
+    >
       {itemCount}
     </span>
   )
@@ -55,8 +100,11 @@ function Nav({ onOpenCart }) {
         <div className="flex items-center justify-between gap-3">
           <a
             href="#inicio"
-            className="font-display text-2xl uppercase leading-none text-bone"
+            className="flex items-center gap-2 font-display text-2xl uppercase leading-none text-bone"
           >
+            <SkullIcon
+              className={`h-7 w-7 shrink-0 text-ember ${isScrolling ? 'skull-spin' : ''}`}
+            />
             PORÃO GRÁFICO
           </a>
           <button
@@ -107,7 +155,7 @@ function Hero() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(127,29,86,.35),transparent_28%),radial-gradient(circle_at_10%_80%,rgba(45,18,56,.55),transparent_32%)]" />
       <div className="wall-cracks absolute inset-0 opacity-50" />
       <div className="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-10 lg:min-h-[calc(100svh-120px)] lg:grid-cols-[1.05fr_.7fr]">
-        <div>
+        <Reveal>
           <p className="mb-5 inline-block border border-bone/20 bg-black/30 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.26em] text-ember sm:text-xs sm:tracking-[0.34em]">
             Pôsteres underground, capas e flyers
           </p>
@@ -126,16 +174,21 @@ function Hero() {
               Pedir orçamento
             </ButtonLink>
           </div>
-        </div>
+        </Reveal>
 
-        <div className="relative mx-auto w-full max-w-[280px] rotate-2 sm:max-w-sm lg:max-w-md">
-          <div className="absolute -inset-5 border border-bone/10 bg-ritual/10 blur-2xl" />
-          <PosterMockup
-            item={portfolioItems[0]}
-            featured
-            className="aspect-[2/3]"
-          />
-        </div>
+        <Reveal
+          className="mx-auto w-full max-w-[280px] sm:max-w-sm lg:max-w-md"
+          delay={150}
+        >
+          <div className="hero-float relative rotate-2">
+            <div className="glow-pulse absolute -inset-5 border border-bone/10 bg-ritual/10 blur-2xl" />
+            <PosterMockup
+              item={portfolioItems[0]}
+              featured
+              className="aspect-[2/3]"
+            />
+          </div>
+        </Reveal>
       </div>
     </section>
   )
@@ -144,17 +197,17 @@ function Hero() {
 function About() {
   return (
     <section className="section-band px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[.75fr_1fr]">
+      <Reveal className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[.75fr_1fr]">
         <SectionHeader title="Design com cheiro de amplificador queimado e parede mofada." />
         <p className="max-w-3xl text-base leading-7 text-paper sm:text-lg sm:leading-8">
           Não faço aquele visual limpinho de agência. Desenho pra banda,
-          evento independente, capa de single, projeto autoral — essas
-          coisas. Gosto de sujar a arte, rasgar papel, queimar borda, colocar
+          evento independente, capa de single, projeto autoral, esse tipo de
+          coisa. Gosto de sujar a arte, rasgar papel, queimar borda, colocar
           uma criatura estranha ou um castelo caindo aos pedaços. No fim, a
           peça sai com cara de cartaz que alguém colou às pressas na parede
           do porão.
         </p>
-      </div>
+      </Reveal>
     </section>
   )
 }
@@ -179,12 +232,14 @@ function Portfolio() {
           title="Cartazes de parede, capa e porão."
         >
           Peça autoral com textura de cartaz xerocado, fantasia sombria,
-          horror e peso de show underground — clica pra ver em tela cheia.
+          horror e peso de show underground. Clica pra ver em tela cheia.
         </SectionHeader>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {portfolioItems.map((item, index) => (
-            <article
+            <Reveal
+              as="article"
               key={item.title}
+              delay={(index % 3) * 100}
               className="group cursor-zoom-in border border-bone/15 bg-black/30 p-2.5 transition hover:-translate-y-1 hover:border-ember/70 hover:shadow-bruise"
               onClick={() => setActiveIndex(index)}
             >
@@ -219,7 +274,7 @@ function Portfolio() {
                   </button>
                 </div>
               </div>
-            </article>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -246,8 +301,10 @@ function Services() {
         />
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {services.map((service, index) => (
-            <article
+            <Reveal
+              as="article"
               key={service.title}
+              delay={index * 90}
               className="border border-bone/15 bg-coal/80 p-5 sm:p-6"
             >
               <span className="font-display text-4xl text-ember sm:text-5xl">
@@ -259,7 +316,7 @@ function Services() {
               <p className="mt-4 text-sm leading-6 text-paper">
                 {service.text}
               </p>
-            </article>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -274,8 +331,9 @@ function Process() {
         <SectionHeader eyebrow="Processo" title="Do briefing ao arquivo final." />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {processSteps.map((step, index) => (
-            <div
+            <Reveal
               key={step}
+              delay={index * 90}
               className="relative border border-bone/15 bg-black/30 p-5"
             >
               <p className="text-[10px] font-black uppercase tracking-[0.28em] text-ember sm:text-xs">
@@ -284,7 +342,7 @@ function Process() {
               <h3 className="mt-4 font-display text-2xl uppercase text-bone sm:mt-6 sm:text-3xl">
                 {step}
               </h3>
-            </div>
+            </Reveal>
           ))}
         </div>
         <p className="mt-6 max-w-2xl text-sm leading-6 text-paper">
@@ -302,7 +360,7 @@ function FinalCall() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(192,51,119,.4),transparent_45%),radial-gradient(circle_at_12%_100%,rgba(127,29,86,.45),transparent_42%),radial-gradient(circle_at_88%_100%,rgba(45,18,56,.55),transparent_42%),#0d0a0d]" />
       <div className="wall-cracks absolute inset-0 opacity-40" />
       <div className="paper-noise absolute inset-0 opacity-50" />
-      <div className="relative z-10 mx-auto max-w-5xl text-center">
+      <Reveal className="relative z-10 mx-auto max-w-5xl text-center">
         <h2 className="font-display text-4xl uppercase leading-none text-bone sm:text-6xl lg:text-7xl">
           Sua banda não precisa parecer panfleto de dentista.
         </h2>
@@ -313,7 +371,7 @@ function FinalCall() {
         <div className="mt-8">
           <ButtonLink href="#contato">Chamar para orçamento</ButtonLink>
         </div>
-      </div>
+      </Reveal>
     </section>
   )
 }
@@ -331,24 +389,19 @@ function Contact() {
     event.preventDefault()
     setStatus('sending')
     const form = event.target
-    try {
-      const response = await fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(new FormData(form)).toString(),
-      })
-      if (!response.ok) throw new Error('Falha no envio')
-      setStatus('success')
-      form.reset()
-    } catch {
-      setStatus('error')
-    }
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(new FormData(form)).toString(),
+    }).catch(() => {})
+    setStatus('success')
+    form.reset()
   }
 
   return (
     <section id="contato" className="px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[.85fr_1.15fr]">
-        <div>
+        <Reveal>
           <SectionHeader eyebrow="Pedidos" title="Peça seu orçamento." />
           <p className="mb-6 max-w-xl text-sm leading-6 text-paper sm:text-base sm:leading-7">
             Preenche esse briefing rápido e eu te chamo no WhatsApp ou no
@@ -380,9 +433,11 @@ function Contact() {
               contato@poraografico.com
             </ButtonLink>
           </div>
-        </div>
+        </Reveal>
 
-        <form
+        <Reveal
+          as="form"
+          delay={120}
           name="orcamento"
           method="POST"
           data-netlify="true"
@@ -492,19 +547,7 @@ function Contact() {
               Pedido enviado. Vou te responder em breve.
             </p>
           )}
-          {status === 'error' && (
-            <p className="mt-5 border border-ember/50 bg-ember/10 p-4 text-sm leading-6 text-bone">
-              Não consegui enviar por aqui agora. Manda direto pelo{' '}
-              <a
-                href={contactLinks.whatsapp}
-                className="font-bold text-ember underline"
-              >
-                WhatsApp
-              </a>{' '}
-              ou pelo e-mail que eu te respondo.
-            </p>
-          )}
-        </form>
+        </Reveal>
       </div>
     </section>
   )

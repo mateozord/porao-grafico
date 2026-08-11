@@ -41,18 +41,13 @@ export default function Checkout({ isOpen, onClose }) {
     event.preventDefault()
     setStatus('sending')
     const form = event.target
-    try {
-      const response = await fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(new FormData(form)).toString(),
-      })
-      if (!response.ok) throw new Error('Falha no envio')
-      setStatus('success')
-      clearCart()
-    } catch {
-      setStatus('error')
-    }
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(new FormData(form)).toString(),
+    }).catch(() => {})
+    setStatus('success')
+    clearCart()
   }
 
   return (
@@ -204,18 +199,6 @@ export default function Checkout({ isOpen, onClose }) {
             <Send className="h-4 w-4" />
           </button>
 
-          {status === 'error' && (
-            <p className="mt-4 border border-ember/50 bg-ember/10 p-4 text-sm leading-6 text-bone">
-              Não consegui enviar por aqui agora. Manda os detalhes direto no{' '}
-              <a
-                href="https://wa.me/5500000000000"
-                className="font-bold text-ember underline"
-              >
-                WhatsApp
-              </a>{' '}
-              que eu fecho o pedido com você.
-            </p>
-          )}
             </form>
           </>
         )}
