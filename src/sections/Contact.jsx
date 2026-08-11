@@ -14,6 +14,14 @@ export default function Contact() {
 
   const [status, setStatus] = useState('idle')
 
+  const flashField = (event) => {
+    const el = event.target
+    el.classList.remove('field-pulse')
+    // eslint-disable-next-line no-void
+    void el.offsetWidth
+    el.classList.add('field-pulse')
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault()
     setStatus('sending')
@@ -119,7 +127,12 @@ export default function Contact() {
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
             <label className="field-label">
               Tipo de arte
-              <select className="field" name="projectType" required>
+              <select
+                className="field"
+                name="projectType"
+                onChange={flashField}
+                required
+              >
                 <option value="Poster de show">Pôster de show</option>
                 <option value="Capa de single/album">
                   Capa de single/álbum
@@ -134,7 +147,7 @@ export default function Contact() {
             </label>
             <label className="field-label">
               Prazo
-              <select className="field" name="deadline">
+              <select className="field" name="deadline" onChange={flashField}>
                 <option value="Sem prazo definido">Sem prazo definido</option>
                 <option value="Ate 7 dias">Até 7 dias</option>
                 <option value="8 a 15 dias">8 a 15 dias</option>
@@ -145,7 +158,7 @@ export default function Contact() {
 
           <label className="field-label mt-5">
             Orçamento aproximado
-            <select className="field" name="budget">
+            <select className="field" name="budget" onChange={flashField}>
               <option value="Ainda nao sei">Ainda não sei</option>
               <option value="Ate R$150">Até R$150</option>
               <option value="R$150 a R$300">R$150 a R$300</option>
@@ -166,13 +179,13 @@ export default function Contact() {
           <button
             type="submit"
             disabled={status === 'sending'}
-            className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 border border-ember bg-ember px-5 py-3 text-sm font-black uppercase tracking-[0.18em] text-bone transition hover:bg-bone hover:text-coal disabled:cursor-not-allowed disabled:border-bone/20 disabled:bg-transparent disabled:text-bone/30 sm:w-auto"
+            className="btn-feedback mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 border border-ember bg-ember px-5 py-3 text-sm font-black uppercase tracking-[0.18em] text-bone transition hover:bg-bone hover:text-coal disabled:cursor-not-allowed disabled:border-bone/20 disabled:bg-transparent disabled:text-bone/30 sm:w-auto"
           >
             {status === 'sending' ? 'Enviando...' : 'Enviar pedido'}
             <Send className="h-4 w-4" />
           </button>
           {status === 'success' && (
-            <p className="mt-5 border border-ember/50 bg-ember/10 p-4 text-sm font-bold uppercase tracking-[0.14em] text-bone">
+            <p className="message-in mt-5 border border-ember/50 bg-ember/10 p-4 text-sm font-bold uppercase tracking-[0.14em] text-bone">
               Pedido enviado. Vou te responder em breve.
             </p>
           )}

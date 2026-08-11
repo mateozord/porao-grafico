@@ -8,6 +8,7 @@ import React, {
 
 const CartContext = createContext(null)
 const STORAGE_KEY = 'porao-grafico-cart'
+export const MAX_QTY_PER_ITEM = 5
 
 function loadInitialState() {
   if (typeof window === 'undefined') return []
@@ -25,6 +26,7 @@ function cartReducer(state, action) {
     case 'ADD': {
       const existing = state.find((line) => line.title === action.item.title)
       if (existing) {
+        if (existing.qty >= MAX_QTY_PER_ITEM) return state
         return state.map((line) =>
           line.title === action.item.title
             ? { ...line, qty: line.qty + 1 }
@@ -48,7 +50,7 @@ function cartReducer(state, action) {
       return state
         .map((line) =>
           line.title === action.title
-            ? { ...line, qty: Math.max(0, action.qty) }
+            ? { ...line, qty: Math.min(MAX_QTY_PER_ITEM, Math.max(0, action.qty)) }
             : line,
         )
         .filter((line) => line.qty > 0)

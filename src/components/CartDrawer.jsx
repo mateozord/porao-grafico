@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Minus, Plus, ShoppingCart, Trash2, X } from 'lucide-react'
-import { useCart } from '../context/CartContext.jsx'
+import { MAX_QTY_PER_ITEM, useCart } from '../context/CartContext.jsx'
 import { formatPrice } from '../utils/format.js'
 
 export default function CartDrawer({ isOpen, onClose, onCheckout }) {
@@ -118,9 +118,10 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
                         </span>
                         <button
                           type="button"
+                          disabled={line.qty >= MAX_QTY_PER_ITEM}
                           onClick={() => setQty(line.title, line.qty + 1)}
                           aria-label={`Aumentar quantidade de ${line.title}`}
-                          className="p-2 text-bone transition hover:bg-bone/10 hover:text-ember"
+                          className="p-2 text-bone transition hover:bg-bone/10 hover:text-ember disabled:cursor-not-allowed disabled:text-bone/25 disabled:hover:bg-transparent"
                         >
                           <Plus className="h-3.5 w-3.5" />
                         </button>
@@ -155,7 +156,7 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
             type="button"
             disabled={items.length === 0}
             onClick={onCheckout}
-            className="inline-flex w-full min-h-12 items-center justify-center gap-2 border border-ember bg-ember px-5 py-3 text-sm font-black uppercase tracking-[0.18em] text-bone transition hover:bg-bone hover:text-coal disabled:cursor-not-allowed disabled:border-bone/20 disabled:bg-transparent disabled:text-bone/30"
+            className="btn-feedback inline-flex w-full min-h-12 items-center justify-center gap-2 border border-ember bg-ember px-5 py-3 text-sm font-black uppercase tracking-[0.18em] text-bone transition hover:bg-bone hover:text-coal disabled:cursor-not-allowed disabled:border-bone/20 disabled:bg-transparent disabled:text-bone/30"
           >
             Finalizar pedido
           </button>

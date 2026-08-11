@@ -8,6 +8,7 @@ export default function Nav({ onOpenCart }) {
   const [pop, setPop] = useState(false)
   const previousCount = useRef(itemCount)
   const [isScrolling, setIsScrolling] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
     if (itemCount > previousCount.current) {
@@ -24,9 +25,11 @@ export default function Nav({ onOpenCart }) {
     let stopTimeout
     const handleScroll = () => {
       setIsScrolling(true)
+      setIsScrolled(window.scrollY > 24)
       clearTimeout(stopTimeout)
       stopTimeout = setTimeout(() => setIsScrolling(false), 500)
     }
+    handleScroll()
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => {
       window.removeEventListener('scroll', handleScroll)
@@ -43,7 +46,9 @@ export default function Nav({ onOpenCart }) {
   )
 
   return (
-    <header className="fixed left-0 right-0 top-0 z-50 border-b border-bone/10 bg-coal/90 backdrop-blur">
+    <header
+      className={`fixed left-0 right-0 top-0 z-50 border-b transition-all duration-300 ease-out ${isScrolled ? 'border-bone/15 bg-coal/95 shadow-poster backdrop-blur-md' : 'border-bone/10 bg-coal/70 backdrop-blur-sm'}`}
+    >
       <nav className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
         <div className="flex items-center justify-between gap-3">
           <a

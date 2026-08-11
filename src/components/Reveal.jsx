@@ -5,10 +5,13 @@ export default function Reveal({
   className = '',
   as: Tag = 'div',
   delay = 0,
+  distance,
+  duration,
   ...rest
 }) {
   const ref = useRef(null)
   const [isVisible, setVisible] = useState(false)
+  const [isSettled, setSettled] = useState(false)
 
   useEffect(() => {
     const node = ref.current
@@ -28,11 +31,26 @@ export default function Reveal({
     return () => observer.disconnect()
   }, [])
 
+  useEffect(() => {
+    const node = ref.current
+    if (!node || !isVisible) return undefined
+
+    const handleAnimationEnd = () => setSettled(true)
+    node.addEventListener('animationend', handleAnimationEnd)
+    return () => node.removeEventListener('animationend', handleAnimationEnd)
+  }, [isVisible])
+
+  const style = {
+    ...(delay ? { animationDelay: `${delay}ms` } : null),
+    ...(distance ? { '--reveal-distance': `${distance}px` } : null),
+    ...(duration ? { '--reveal-duration': `${duration}ms` } : null),
+  }
+
   return (
     <Tag
       ref={ref}
-      className={`reveal ${isVisible ? 'is-visible' : ''} ${className}`}
-      style={delay ? { animationDelay: `${delay}ms` } : undefined}
+      className={`reveal ${isVisible ? 'is-visible' : ''} ${isSettled ? 'is-settled' : ''} ${className}`}
+      style={Object.keys(style).length ? style : undefined}
       {...rest}
     >
       {children}

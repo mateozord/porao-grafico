@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import CartDrawer from './components/CartDrawer.jsx'
 import Checkout from './components/Checkout.jsx'
+import Marquee from './components/Marquee.jsx'
 import About from './sections/About.jsx'
 import Contact from './sections/Contact.jsx'
 import FinalCall from './sections/FinalCall.jsx'
@@ -19,6 +20,7 @@ export default function App() {
       <div className="site-noise pointer-events-none fixed inset-0 z-[60] opacity-[0.08]" />
       <Nav onOpenCart={() => setCartOpen(true)} />
       <Hero />
+      <Marquee />
       <About />
       <Portfolio />
       <Services />

@@ -37,6 +37,14 @@ export default function Checkout({ isOpen, onClose }) {
 
   if (!isOpen) return null
 
+  const flashField = (event) => {
+    const el = event.target
+    el.classList.remove('field-pulse')
+    // eslint-disable-next-line no-void
+    void el.offsetWidth
+    el.classList.add('field-pulse')
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault()
     setStatus('sending')
@@ -79,7 +87,7 @@ export default function Checkout({ isOpen, onClose }) {
         </h2>
 
         {status === 'success' ? (
-          <div className="mt-6 border border-ember/50 bg-ember/10 p-5 text-sm leading-6 text-bone">
+          <div className="message-in mt-6 border border-ember/50 bg-ember/10 p-5 text-sm leading-6 text-bone">
             <p className="font-display text-2xl uppercase leading-none text-bone sm:text-3xl">
               Pedido recebido.
             </p>
@@ -174,7 +182,12 @@ export default function Checkout({ isOpen, onClose }) {
 
           <label className="field-label mt-5">
             Forma de pagamento
-            <select className="field" name="payment" required>
+            <select
+                className="field"
+                name="payment"
+                onChange={flashField}
+                required
+              >
               <option value="Pix">Pix</option>
               <option value="Cartao">Cartão (link de pagamento)</option>
               <option value="Combinar na entrega">Combinar na entrega</option>
@@ -193,7 +206,7 @@ export default function Checkout({ isOpen, onClose }) {
           <button
             type="submit"
             disabled={items.length === 0 || status === 'sending'}
-            className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 border border-ember bg-ember px-5 py-3 text-sm font-black uppercase tracking-[0.18em] text-bone transition hover:bg-bone hover:text-coal disabled:cursor-not-allowed disabled:border-bone/20 disabled:bg-transparent disabled:text-bone/30"
+            className="btn-feedback mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 border border-ember bg-ember px-5 py-3 text-sm font-black uppercase tracking-[0.18em] text-bone transition hover:bg-bone hover:text-coal disabled:cursor-not-allowed disabled:border-bone/20 disabled:bg-transparent disabled:text-bone/30"
           >
             {status === 'sending' ? 'Enviando...' : 'Confirmar pedido'}
             <Send className="h-4 w-4" />
