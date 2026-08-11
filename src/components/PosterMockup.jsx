@@ -16,7 +16,10 @@ export default function PosterMockup({
             src={item.image}
             alt={item.imageAlt || item.title}
             className="h-full w-full object-contain"
+            width={800}
+            height={1200}
             loading={featured ? 'eager' : 'lazy'}
+            fetchpriority={featured ? 'high' : 'auto'}
           />
           <div className="paper-noise pointer-events-none absolute inset-0 opacity-20 mix-blend-screen" />
           <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-bone/15" />

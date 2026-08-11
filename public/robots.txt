@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://porao-grafico.netlify.app/sitemap.xml
